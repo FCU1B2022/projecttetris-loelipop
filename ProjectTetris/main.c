@@ -22,6 +22,10 @@
 #define CANVAS_WIDTH 10
 #define CANVAS_HEIGHT 20
 
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_BLUE "\x1b[34m"
+#define ANSI_COLOR_RESET "\x1b[0m"
+
 typedef enum {
     RED = 41,
     GREEN,
@@ -266,6 +270,16 @@ Shape shapes[7] = {
     },
 };
 
+void menu() {
+    printf(""ANSI_COLOR_BLUE"*   :::::::::::       ::::::::::   :::::::::::       :::::::::       :::::::::::       :::::::: *\n");
+    printf("*     +:+           +:+              +:+           +:+    +:+          +:+          +:+ *\n");
+    printf("*    +#+           +#++:++#         +#+           +#++:++#:           +#+          +#++:++#++ *\n");
+    printf("" ANSI_COLOR_RED "*   +#+           +#+              +#+           +#+    +#+          +#+                 +#+ *\n");
+    printf("*  #+#           #+#              #+#           #+#    #+#          #+#          #+#    #+# *\n");
+    printf("* ###           ##########       ###           ###    ###      ###########       ######## *\n");
+    printf(ANSI_COLOR_RESET);
+    system("pause");
+}
 void setBlock(Block* block, Color color, ShapeId shape, bool current)
 {
     block->color = color;
@@ -451,6 +465,7 @@ void logic(Block canvas[CANVAS_HEIGHT][CANVAS_WIDTH], State* state)
 
 int main()
 {
+    menu();
     srand(time(NULL));
     State state = {
         .x = CANVAS_WIDTH / 2,
