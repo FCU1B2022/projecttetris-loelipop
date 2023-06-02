@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
@@ -22,9 +22,11 @@
 #define CANVAS_WIDTH 10
 #define CANVAS_HEIGHT 20
 
-#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_YELLOW "\x1b[33m"
 #define ANSI_COLOR_BLUE "\x1b[34m"
 #define ANSI_COLOR_RESET "\x1b[0m"
+
+bool gameOver = false;
 
 typedef enum {
     RED = 41,
@@ -274,12 +276,13 @@ void menu() {
     printf(""ANSI_COLOR_BLUE"*   :::::::::::       ::::::::::   :::::::::::       :::::::::       :::::::::::       :::::::: *\n");
     printf("*     +:+           +:+              +:+           +:+    +:+          +:+          +:+ *\n");
     printf("*    +#+           +#++:++#         +#+           +#++:++#:           +#+          +#++:++#++ *\n");
-    printf("" ANSI_COLOR_RED "*   +#+           +#+              +#+           +#+    +#+          +#+                 +#+ *\n");
+    printf("" ANSI_COLOR_YELLOW "*   +#+           +#+              +#+           +#+    +#+          +#+                 +#+ *\n");
     printf("*  #+#           #+#              #+#           #+#    #+#          #+#          #+#    #+# *\n");
     printf("* ###           ##########       ###           ###    ###      ###########       ######## *\n");
     printf(ANSI_COLOR_RESET);
     system("pause");
 }
+
 void setBlock(Block* block, Color color, ShapeId shape, bool current)
 {
     block->color = color;
@@ -339,7 +342,7 @@ void printCanvas(Block canvas[CANVAS_HEIGHT][CANVAS_WIDTH], State* state)
     for (int i = 0; i < CANVAS_HEIGHT; i++) {
         printf("|");
         for (int j = 0; j < CANVAS_WIDTH; j++) {
-            printf("\033[%dm\u3000", canvas[i][j].color);
+            printf("\033[%dm  ", canvas[i][j].color);
         }
         printf("\033[0m|\n");
     }
@@ -456,49 +459,63 @@ void logic(Block canvas[CANVAS_HEIGHT][CANVAS_WIDTH], State* state)
             if (!move(canvas, state->x, state->y, state->rotate, state->x, state->y, state->rotate, state->queue[0]))
             {
                 printf("\033[%d;%dH\x1b[41m GAME OVER \x1b[0m\033[%d;%dH", CANVAS_HEIGHT - 3, CANVAS_WIDTH * 2 + 5, CANVAS_HEIGHT + 5, 0);
-                exit(0);
+                gameOver = true;
+                //system("pause");
+                break;
             }
         }
     }
+    
     return;
 }
 
-int main()
-{
-    menu();
+void playGame() {
     srand(time(NULL));
     State state = {
         .x = CANVAS_WIDTH / 2,
         .y = 0,
         .score = 0,
         .rotate = 0,
-        .fallTime = 0
+        .fallTime = 0,
     };
-
-    for (int i = 0; i < 4; i++)
-    {
+    
+    for (int i = 0; i < 4; i++) {
         state.queue[i] = rand() % 7;
     }
-
+    
     Block canvas[CANVAS_HEIGHT][CANVAS_WIDTH];
-    for (int i = 0; i < CANVAS_HEIGHT; i++)
-    {
-        for (int j = 0; j < CANVAS_WIDTH; j++)
-        {
+    for (int i = 0; i < CANVAS_HEIGHT; i++) {
+        for (int j = 0; j < CANVAS_WIDTH; j++) {
             resetBlock(&canvas[i][j]);
         }
     }
-
+    
     system("cls");
-    // printf("\e[?25l"); // hide cursor
-
+    // printf("\e[?25l"); // 隱藏游標
+    
     move(canvas, state.x, state.y, state.rotate, state.x, state.y, state.rotate, state.queue[0]);
-
-    while (1)
-    {
+    
+    while (!gameOver) {
         logic(canvas, &state);
         printCanvas(canvas, &state);
         Sleep(100);
     }
+    
+}
 
+int main()
+{
+    menu();
+    while (1) {
+        playGame();
+        printf("Press Enter to restart the game or 'x' to exit...");
+        int key = _getch();
+        if (key == 'x') {
+            exit(0);  // 按下 'x' 鍵結束遊戲
+        }
+        else if (key == '\r') {
+            gameOver = false;
+            continue; // 按下 'Enter' 鍵重新開始遊戲
+        }
+    }
 }
