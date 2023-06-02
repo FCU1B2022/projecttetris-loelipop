@@ -273,14 +273,25 @@ Shape shapes[7] = {
 };
 
 void menu() {
-    printf(""ANSI_COLOR_BLUE"*   :::::::::::       ::::::::::   :::::::::::       :::::::::       :::::::::::       :::::::: *\n");
-    printf("*     +:+           +:+              +:+           +:+    +:+          +:+          +:+ *\n");
-    printf("*    +#+           +#++:++#         +#+           +#++:++#:           +#+          +#++:++#++ *\n");
-    printf("" ANSI_COLOR_YELLOW "*   +#+           +#+              +#+           +#+    +#+          +#+                 +#+ *\n");
-    printf("*  #+#           #+#              #+#           #+#    #+#          #+#          #+#    #+# *\n");
-    printf("* ###           ##########       ###           ###    ###      ###########       ######## *\n");
-    printf(ANSI_COLOR_RESET);
-    system("pause");
+    while (1) {
+        if (_kbhit()) {  // 檢測是否有按鍵輸入
+            char key = _getch();  // 獲取按鍵值
+            if (key != '\0') {  // 按下任意鍵
+                break;  // 跳出迴圈
+            }
+        }
+        printf(""ANSI_COLOR_BLUE"*   :::::::::::       ::::::::::   :::::::::::       :::::::::       :::::::::::       :::::::: *\n");
+        printf("*     +:+           +:+              +:+           +:+    +:+          +:+          +:+ *\n");
+        printf("*    +#+           +#++:++#         +#+           +#++:++#:           +#+          +#++:++#++ *\n");
+        printf("" ANSI_COLOR_YELLOW "*   +#+           +#+              +#+           +#+    +#+          +#+                 +#+ *\n");
+        printf("*  #+#           #+#              #+#           #+#    #+#          #+#          #+#    #+# *\n");
+        printf("* ###           ##########       ###           ###    ###      ###########       ######## *\n");
+        printf(ANSI_COLOR_RESET);
+        printf("Press any key to start");
+        Sleep(200);
+        system("cls");
+        
+    }
 }
 
 void setBlock(Block* block, Color color, ShapeId shape, bool current)
@@ -460,7 +471,7 @@ void logic(Block canvas[CANVAS_HEIGHT][CANVAS_WIDTH], State* state)
             {
                 printf("\033[%d;%dH\x1b[41m GAME OVER \x1b[0m\033[%d;%dH", CANVAS_HEIGHT - 3, CANVAS_WIDTH * 2 + 5, CANVAS_HEIGHT + 5, 0);
                 gameOver = true;
-                //system("pause");
+                system("pause");
                 break;
             }
         }
@@ -511,6 +522,7 @@ int main()
         printf("Press Enter to restart the game or 'x' to exit...");
         int key = _getch();
         if (key == 'x') {
+            system("cls");
             exit(0);  // 按下 'x' 鍵結束遊戲
         }
         else if (key == '\r') {
